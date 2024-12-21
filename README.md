@@ -108,9 +108,11 @@ fileflow ai/
     └── streamlit_app.py
 ```
 
-## Team Members
+## Contributors
 - Mohammed Uvez Khan        
 - Farman I
 - Arafat Farooqui
 - Aman Ramzan Sheikh
 
+---
+For questions or feedback, please contact us at mohammeduvezkhan@gmail.com.
