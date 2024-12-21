@@ -1,7 +1,6 @@
-# Document Classification Project
+# FileFlow AI
 
-## Project Title
-**FileFlow AI: Document Classification System**
+## Document Classification System
 
 ## Project Description
 FileFlow AI is a robust document classification system leveraging a free, Python-based technology stack. It allows users to upload and classify documents into predefined categories while processing text and metadata efficiently. The system supports various document formats, including PDFs and images, and provides a user-friendly interface for interaction. It addresses the challenge of automating the categorization and summarization of diverse document types such as:
