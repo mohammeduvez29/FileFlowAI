@@ -109,11 +109,8 @@ fileflow ai/
 ```
 
 ## Team Members
-- Mohammed Uvez Khan
+- Mohammed Uvez Khan        [Mohammed Uvez Khan](images/uvez.jpg)
 - Farman I
 - Arafat Farooqui
 - Aman Ramzan Sheikh
-
----
-For questions or feedback, please contact us at mohammeduvezkhan@gmail.com.
 
