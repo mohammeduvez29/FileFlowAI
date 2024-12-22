@@ -3,7 +3,7 @@
 ---
 
 ## 🔧 Overview
-FileFlow AI is an **innovative and intelligent document classification system** designed to simplify your workflow. Using a robust, Python-based technology stack, it offers:
+FileFlow AI is an **innovative and intelligent document classification system** designed to simplify the workflow for Financial Institutions. Using a robust, Python-based technology stack, it offers:
 
 🔑 **Comprehensive Document Handling:**
 - Bank Applications: Credit card, savings account forms
