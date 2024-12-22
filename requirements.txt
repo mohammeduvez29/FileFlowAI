@@ -1,0 +1,41 @@
+# Web Framework
+fastapi==0.68.0
+uvicorn==0.15.0
+
+# Frontend
+streamlit==1.2.0
+
+# Machine Learning
+scikit-learn==0.24.2
+numpy==1.21.2
+pandas==1.3.3
+
+# Natural Language Processing
+nltk==3.6.3
+
+# OCR
+pytesseract==0.3.8
+Pillow==8.3.2
+
+# PDF Processing
+PyPDF2==1.26.0
+
+# Data Handling
+python-multipart==0.0.5
+
+# Testing
+pytest==6.2.5
+
+# API Requests (for Streamlit frontend)
+requests==2.26.0
+
+# Progress Bars
+tqdm==4.62.3
+
+# Data Visualization (optional, for notebooks)
+matplotlib==3.4.3
+seaborn==0.11.2
+
+# Jupyter Notebook (for development and documentation)
+jupyter==1.0.0
+
