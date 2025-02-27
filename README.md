@@ -122,14 +122,6 @@ FileFlowAI/
 
 ---
 
-## 👨‍💼 Contributors
-Our team of talented individuals:
-
-💎 **Mohammed Uvez Khan**  
-💎 **Farman I**  
-💎 **Arafat Farooqui**  
-💎 **Aman Ramzan Sheikh**  
-
 For inquiries or feedback, contact us at [mohammeduvezkhan@gmail.com](mailto:mohammeduvezkhan@gmail.com).
 
 ---
