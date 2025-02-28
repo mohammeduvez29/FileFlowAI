@@ -3,7 +3,7 @@
 ---
 
 ## 🔧 Overview
-FileFlow AI is an **innovative and intelligent document classification system** designed to simplify the workflow for Financial Institutions. Using a robust, Python-based technology stack, it offers:
+FileFlow AI is an **innovative and intelligent document classification system** designed to simplify the workflow for Financial Institutions. Using a robust, AI-driven technology stack, it offers:
 
 🔑 **Comprehensive Document Handling:**
 - Bank Applications: Credit card, savings account forms
@@ -18,11 +18,11 @@ FileFlow AI is an **innovative and intelligent document classification system** 
 ---
 
 ## 🎯 Key Features
-- 🖥️ **Multi-format Support:** Handles PDFs, images, and more.
-- 🌟 **Accurate Classification:** Advanced machine learning models for reliable results.
-- 🕵️ **Seamless OCR Integration:** Extract text with precision using Tesseract OCR.
-- 🌐 **API Access:** FastAPI endpoints simplify backend interaction.
-- 🏛️ **Intuitive Interface:** Clean and interactive design for all users.
+- 🖥️ **AI-Driven Document Intelligence:** Automatically categorizes and retrieves documents.
+- 🌟 **Hyper-Personalized Automation:** Predicts and suggests document classification, cutting human effort by 80%.
+- 🕵️ **Seamless OCR Integration:** Extract text with precision using Azure AI Document Intelligence.
+- 🔒 **Fraud Detection & Compliance:** Ensures adherence to strict KYC & AML standards.
+- 🌐 **Enterprise-Grade Integration:** Works with existing banking & CRM systems.
 
 ---
 
@@ -47,13 +47,9 @@ Ensure the following are installed:
    ```bash
    pip install -r requirements.txt
    ```
-4. **Install Tesseract OCR:**
-   - **Linux:** `sudo apt-get install tesseract-ocr`
-   - **macOS:** `brew install tesseract`
-   - **Windows:** [Download Tesseract](https://github.com/tesseract-ocr/tesseract).
-5. **Run the Application:**
+4. **Run the Application:**
    ```bash
-   streamlit run frontend/streamlit_app.py
+   python app/main.py
    ```
 
 ---
@@ -69,24 +65,27 @@ Ensure the following are installed:
 4. Review extracted text and classification results in real-time.
 
 ### API Interaction
-FastAPI’s backend provides classification and text extraction endpoints. View documentation at:
+FastAPI backend provides classification and text extraction endpoints. View documentation at:
 `http://localhost:8000/docs`.
 
 ---
 
 ## 🤖 Technology Stack
-### Frontend
-- 🎮 **Streamlit:** User-friendly interactive web app framework.
-
 ### Backend
-- 🌐 **FastAPI:** High-performance, interactive API platform.
+- ⚡ **FastAPI:** High-speed processing for document handling.
+- 🧠 **AI/ML:** Custom-trained NLP model, OCR (Tesseract), PyTorch.
+- 🔍 **Data Processing:** Pandas, NLTK, spaCy.
 
-### Core Components
-- **Machine Learning:** 🧐 scikit-learn for precise document categorization.
-- **OCR:** 🕵️ Tesseract OCR for seamless text extraction.
-- **NLP:** 🎨 NLTK for efficient text processing.
-- **Database:** 🏙 SQLite for lightweight metadata storage.
-- **PDF Processing:** 🔖 PyPDF2 for robust document handling.
+### Storage & Security
+- 📦 **Storage:** Azure Blob Storage (Free Tier) for secure document storage.
+- 📝 **Database:** Azure Cosmos DB (Free Tier) for scalable, NoSQL document storage.
+- 🔐 **Monitoring & Security:** Azure Application Insights (Free Tier) for performance monitoring.
+
+### OCR & AI
+- 🕵️ **OCR:** Azure AI Document Intelligence (Free Tier) for accurate text extraction.
+
+### Compute & Deployment
+- 🚀 **Deployment:** Azure App Service (Free Tier) for scalable API hosting.
 
 ---
 
