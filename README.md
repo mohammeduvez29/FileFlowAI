@@ -1,5 +1,6 @@
 # 🔬 FileFlow AI: Your Smart Document Classification Solution
 
+PRESENTATION DECK: https://stdntpartners-my.sharepoint.com/:p:/g/personal/mohammeduvez_khan_studentambassadors_com/EeAd0pirnMdEpSf9fBtbskkBb8YsHqWJEan8DRCqXSb6hg?e=YQO0yI
 ---
 
 ## 🔧 Overview
