@@ -1,24 +1,13 @@
 import os
 import re
 import streamlit as st
-from dotenv import load_dotenv
 from azure.ai.formrecognizer import DocumentAnalysisClient
 from azure.core.credentials import AzureKeyCredential
 from azure.storage.blob import BlobServiceClient
 from azure.cosmos import CosmosClient
+from config import *
 
-# Load environment variables
-load_dotenv()
-BLOB_CONNECTION_STRING = os.getenv("BLOB_CONNECTION_STRING")
-CONTAINER_NAME = os.getenv("CONTAINER_NAME")
-AZURE_OCR_ENDPOINT = os.getenv("AZURE_OCR_ENDPOINT")
-AZURE_OCR_KEY = os.getenv("AZURE_OCR_KEY")
-COSMOS_DATABASE = os.getenv("COSMOS_DATABASE")
-COSMOS_CONTAINER = os.getenv("COSMOS_CONTAINER")
-COSMOS_URL = os.getenv("COSMOS_URL")
-COSMOS_KEY = os.getenv("COSMOS_KEY")
-
-# Initialize Azure Clients
+# Initialize Azure Clients using imported config
 ocr_client = DocumentAnalysisClient(AZURE_OCR_ENDPOINT, AzureKeyCredential(AZURE_OCR_KEY))
 blob_service_client = BlobServiceClient.from_connection_string(BLOB_CONNECTION_STRING)
 cosmos_client = CosmosClient(COSMOS_URL, COSMOS_KEY)
@@ -59,16 +48,16 @@ def link_document_to_account(account_id, document_type, document_url):
     container.replace_item(item=account_id, body=account)
 
 def get_documents_by_account(account_id):
-    """Retrieves all linked documents for a given account ID."""
+    """Retrieves all linked documents for a given account ID and the account holder's name."""
     try:
         account = container.read_item(item=account_id, partition_key=account_id)
-        return account["documents"]
+        return account["documents"], account["name"]
     except:
-        return None
+        return None, None
 
 # Streamlit UI
 st.set_page_config(page_title="OCR & Document Storage", layout="centered", page_icon="📑")
-st.title("📄 OCR Document Analyzer & Account Manager")
+st.title("📄 FileFlow AI")
 st.markdown("**Upload a document or search by account number!**")
 
 option = st.radio("Choose an option:", ["📤 Upload Document", "🔍 Search by Account Number"])
@@ -110,9 +99,10 @@ if option == "📤 Upload Document":
 elif option == "🔍 Search by Account Number":
     account_id = st.text_input("Enter Account Number:")
     if st.button("🔍 Search"):
-        documents = get_documents_by_account(account_id)
+        documents, account_name = get_documents_by_account(account_id)
         if documents:
             st.success(f"🆔 **Account ID:** {account_id}")
+            st.info(f"👤 Account Holder: **{account_name}**")
             for doc in documents:
                 st.info(f"📑 {doc['type']}: [View Document]({doc['url']})")
         else:
