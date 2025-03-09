@@ -1,6 +1,7 @@
 import os
 import re
 import streamlit as st
+import pycountry
 from azure.ai.formrecognizer import DocumentAnalysisClient
 from azure.core.credentials import AzureKeyCredential
 from azure.storage.blob import BlobServiceClient
@@ -14,10 +15,27 @@ cosmos_client = CosmosClient(COSMOS_URL, COSMOS_KEY)
 database = cosmos_client.get_database_client(COSMOS_DATABASE)
 container = database.get_container_client(COSMOS_CONTAINER)
 
+import re
+
 def extract_name(text):
-    """Extracts Name from OCR text."""
-    name_match = re.search(r"नाम\s*[/]*\s*name\s*[:\-]*\s*([A-Za-z\s]+)\s*पिता", text, re.IGNORECASE)
-    return name_match.group(1).strip() if name_match else None
+    """Extracts Name from OCR text for various document types."""
+    # Aadhaar-specific name extraction
+    aadhaar_name_match = re.search(r"\n([A-Za-z\s]+)\n", text)
+    if aadhaar_name_match:
+        return aadhaar_name_match.group(1).strip()
+
+    # PAN-specific name extraction
+    # PAN-specific name extraction (Improved for accuracy)
+    pan_name_match = re.search(r"Name\s*[:\-]*\s*([A-Z\s]+)\b", text, re.IGNORECASE)
+    if pan_name_match:
+        return pan_name_match.group(1).strip()
+
+
+    # Passport-specific name extraction
+    passport_name_match = re.search(r"(Given Name\(s\)|Given Name)\s*[:\-]*\s*([A-Za-z\s]+)", text, re.IGNORECASE)
+    return passport_name_match.group(2).strip() if passport_name_match else None
+
+
 
 def upload_to_blob(file):
     """Uploads file to Azure Blob Storage and returns the URL."""
@@ -27,7 +45,7 @@ def upload_to_blob(file):
 
 def get_account_by_name(name):
     """Checks if an account exists for the given name in CosmosDB."""
-    query = f"SELECT * FROM c WHERE c.name = '{name}'"
+    query = f"SELECT * FROM c WHERE LOWER(c.name) = '{name.lower()}'"
     items = list(container.query_items(query, enable_cross_partition_query=True))
     return items[0] if items else None
 
@@ -56,9 +74,12 @@ def get_documents_by_account(account_id):
         return None, None
 
 # Streamlit UI
-st.set_page_config(page_title="OCR & Document Storage", layout="centered", page_icon="📑")
-st.title("📄 FileFlow AI")
-st.markdown("**Upload a document or search by account number!**")
+st.set_page_config(page_title="FileFlow AI", layout="centered", page_icon="📑")
+
+# Display FileFlow AI logo and title
+st.image("fileflow.png", width=150)  # Make sure to upload your logo to the working directory
+st.title("FileFlow AI")
+st.markdown("**Efficiently manage and link your documents with FileFlow AI!**")
 
 option = st.radio("Choose an option:", ["📤 Upload Document", "🔍 Search by Account Number"])
 
@@ -71,19 +92,30 @@ if option == "📤 Upload Document":
             result = poller.result()
             extracted_text = " ".join([line.content for page in result.pages for line in page.lines]).lower()
 
-            doc_type = "PAN Card" if "permanent account number" in extracted_text else "Unknown Document Type"
+            doc_type = (
+                            'PAN Card' if 'permanent account number' in extracted_text
+                            else 'Aadhaar Card' if 'aadhaar' in extracted_text or 'आधार' in extracted_text or 'ಆಧಾರ್' in extracted_text or 'VID' in extracted_text or 'Government of India' in extracted_text or 'DOB' in extracted_text
+                            else 'Passport' if 'passport no.' in extracted_text or 'republic of india' in extracted_text or 'PASSPORT' in extracted_text
+                            else 'Invoice' if 'invoice number' in extracted_text
+                            else 'Application' if 'application number' in extracted_text
+                            else 'Passport' if any(country.name.lower() in extracted_text.lower() for country in pycountry.countries) or 'PASSPORT' in extracted_text
+                            else 'Unknown Document Type'
+            )
+
             extracted_name = extract_name(extracted_text)
             doc_url = upload_to_blob(uploaded_file)
 
-            st.success(f"📑 Extracted Document Type: **{doc_type}**")
+            st.success(f"📑 Extracted Document Type: {doc_type}")
             if extracted_name:
-                extracted_name = extracted_name.lower().strip()
-                st.success(f"🆔 Extracted Name: **{extracted_name}**")
+                extracted_name = extracted_name.title().strip()
+                st.success(f"🆔 Extracted Name: {extracted_name}")
                 existing_account = get_account_by_name(extracted_name)
 
                 if existing_account:
-                    link_document_to_account(existing_account["id"], doc_type, doc_url)
-                    st.success(f"✅ Document successfully linked to Account ID: {existing_account['id']}")
+                    confirm_link = st.radio(f"Account found for {extracted_name} (Account ID: {existing_account['id']}). Do you want to link this document?", ["No", "Yes"])
+                    if confirm_link == "Yes":
+                        link_document_to_account(existing_account["id"], doc_type, doc_url)
+                        st.success(f"✅ Document successfully linked to Account ID: {existing_account['id']}")
                 else:
                     create_new = st.radio("Account not found. Create a new one?", ["Yes", "No"])
                     if create_new == "Yes":
@@ -101,9 +133,9 @@ elif option == "🔍 Search by Account Number":
     if st.button("🔍 Search"):
         documents, account_name = get_documents_by_account(account_id)
         if documents:
-            st.success(f"🆔 **Account ID:** {account_id}")
-            st.info(f"👤 Account Holder: **{account_name}**")
+            st.success(f"🆔 Account ID: {account_id}")
+            st.info(f"👤 Account Holder: {account_name.title()}")
             for doc in documents:
                 st.info(f"📑 {doc['type']}: [View Document]({doc['url']})")
         else:
-            st.error("❌ No records found.")
+            st.error("❌ No records found. Please ensure the account ID is correct.")
