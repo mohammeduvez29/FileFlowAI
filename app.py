@@ -195,7 +195,7 @@ if selected_tab == "📤 Upload Document":
     st.markdown("Upload your document for automatic analysis and account linking.")
     
     # Create a card-like container for the upload section
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
+    
     
     # File uploader with improved styling
     st.markdown("<div class='upload-section'>", unsafe_allow_html=True)
@@ -218,13 +218,17 @@ if selected_tab == "📤 Upload Document":
 
                 # Determine document type
                 doc_type = (
-                    'PAN Card' if 'permanent account number' in extracted_text
-                    else 'Aadhaar Card' if 'aadhaar' in extracted_text or 'आधार' in extracted_text or 'VID' in extracted_text or 'Government of India' in extracted_text or 'DOB' in extracted_text
-                    else 'Passport' if 'passport no.' in extracted_text or 'republic of india' in extracted_text
-                    else 'Invoice' if 'invoice number' in extracted_text
-                    else 'Application' if 'application number' in extracted_text
-                    else 'Unknown Document Type'
-                )
+                            'PAN Card' if 'permanent account number' in extracted_text
+                             else 'Aadhaar Card' if 'aadhaar' in extracted_text or 'आधार' in extracted_text or 'VID' in extracted_text or 'Government of India' in extracted_text or 'DOB' in extracted_text
+                             else 'Passport' if (
+                            'passport no.' in extracted_text or 
+                            'republic of india' in extracted_text or
+                            any(country.name in extracted_text for country in pycountry.countries)
+                            )
+                            else 'Invoice' if 'invoice number' in extracted_text
+                            else 'Application' if 'application number' in extracted_text
+                            else 'Unknown Document Type'
+                            )
 
                 # Extract name
                 extracted_name = extract_name(extracted_text)
@@ -236,6 +240,7 @@ if selected_tab == "📤 Upload Document":
                 st.markdown("<div class='success-card'>", unsafe_allow_html=True)
                 st.markdown(f"### Analysis Results")
                 st.markdown(f"**Document Type:** {doc_type}")
+                st.markdown("</div>", unsafe_allow_html=True)
                 
                 if extracted_name:
                     extracted_name = extracted_name.title().strip()
@@ -270,6 +275,7 @@ if selected_tab == "📤 Upload Document":
                         st.markdown("<div class='warning-card'>", unsafe_allow_html=True)
                         st.markdown("### No Account Found")
                         st.markdown(f"No existing account found for **{extracted_name}**")
+                        st.markdown("</div>", unsafe_allow_html=True)
                         st.markdown("</div>", unsafe_allow_html=True)
                         
                         # Option to create new account
@@ -307,9 +313,7 @@ if selected_tab == "📤 Upload Document":
 elif selected_tab == "🔍 Search Account":
     st.markdown("<h1>Search Account</h1>", unsafe_allow_html=True)
     st.markdown("Search for an account to view linked documents.")
-    
-    # Create a card-like container for the search section
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
+
     
     # Search form
     with st.form("search_form"):
